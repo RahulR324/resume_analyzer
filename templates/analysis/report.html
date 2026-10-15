@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Report · {{ analysis.job_title }}{% endblock %}
+{% block body_class %}print-report{% endblock %}
+{% block content %}
+{% with insights=analysis.report.insights %}
+<article class="report">
+  <div class="row" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem;">
+    <div>
+      <p class="eyebrow">{{ PRODUCT_NAME }} Match Intelligence Report</p>
+      <h1>{{ analysis.job_title }}</h1>
+      <p class="muted" style="margin: 0;">Target Role Assessment · Generated {{ analysis.created_at|date:"F j, Y" }}</p>
+    </div>
+    <div class="no-print">
+      <button class="btn btn--ghost" type="button" onclick="window.print()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.35rem;">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Print report
+      </button>
+    </div>
+  </div>
+
+  <p class="lede" style="margin-bottom: 1.5rem;">{{ insights.summary_line }}</p>
+
+  <div class="stats" style="margin-bottom: 2rem;">
+    <div class="stat"><strong>{{ analysis.overall_score }}</strong><span>Overall Score</span></div>
+    <div class="stat"><strong>{{ analysis.ats_score }}</strong><span>ATS Hygiene</span></div>
+    <div class="stat"><strong>{{ analysis.keyword_score }}</strong><span>Keywords</span></div>
+    <div class="stat"><strong>{{ analysis.semantic_score }}</strong><span>Semantic Fit</span></div>
+  </div>
+
+  <h2>Recommended next actions</h2>
+  <ol class="actions" style="margin-bottom: 2rem;">
+    {% for action in insights.next_actions %}
+      <li>{{ action }}</li>
+    {% endfor %}
+  </ol>
+
+  {% if analysis.report.missing_skills %}
+    <h2>Identified skill gaps</h2>
+    <div class="chips" style="margin-bottom: 2rem;">
+      {% for skill in analysis.report.missing_skills %}
+        <span class="chip chip--miss">{{ skill }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if insights.cover_letter %}
+    <h2>Tailored cover letter draft</h2>
+    <pre class="extract">{{ insights.cover_letter }}</pre>
+  {% endif %}
+</article>
+{% endwith %}
+{% endblock %}

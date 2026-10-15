@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Jobs{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Target Opportunities</p>
+    <h1>Jobs</h1>
+    <p class="lede">Save job descriptions to quickly run comparative ATS scoring against your resumes.</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn" href="{% url 'jobs:create' %}">Save a posting</a>
+  </div>
+</section>
+{% if jobs %}
+  <ul class="card-list">
+    {% for job in jobs %}
+      <li class="card row">
+        <div>
+          <a href="{{ job.get_absolute_url }}" style="font-size: 1rem; font-weight: 600;">{{ job.title }}</a>
+          <p class="muted" style="margin: 0.25rem 0 0 0; font-size: 0.8125rem;">
+            {{ job.company|default:"Company not specified" }}{% if job.location %} · {{ job.location }}{% endif %}
+          </p>
+        </div>
+        <div>
+          <a class="btn btn--small btn--ghost" href="{% url 'analysis:create' %}?job={{ job.pk }}">Match resume</a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">No target jobs saved yet</p>
+    <p class="muted" style="margin-bottom: 1.25rem; max-width: 28rem; margin-left: auto; margin-right: auto;">Paste a job description or vacancy to benchmark your resume and discover keyword gaps.</p>
+    <a class="btn" href="{% url 'jobs:create' %}">Save your first job posting</a>
+  </div>
+{% endif %}
+{% endblock %}

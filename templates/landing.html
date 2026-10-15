@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{{ PRODUCT_NAME }}{% endblock %}
+{% block body_class %}landing{% endblock %}
+{% block content %}
+<section class="hero" style="padding: 3.5rem 0 2.5rem;">
+  <span class="eyebrow" style="background: var(--primary-subtle); border: 1px solid var(--primary-border); padding: 0.25rem 0.65rem; border-radius: 9999px;">ATS-Aware Resume Intelligence</span>
+  <h1 style="font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2; margin-top: 0.75rem;">Stop guessing why the job portal went quiet.</h1>
+  <p class="lede">{{ PRODUCT_NAME }} evaluates your resume the way modern hiring systems do: keyword saturation, parseability, structural compliance, and bullets that substantiate measurable outcomes.</p>
+  <div class="hero__actions">
+    <a class="btn" href="{% url 'accounts:register' %}">Analyze a resume</a>
+    <a class="btn btn--ghost" href="{% url 'accounts:login' %}">I already have an account</a>
+  </div>
+</section>
+
+<section class="grid-3 features" style="margin-top: 1.5rem; align-items: stretch;">
+  <article class="card" style="height: 100%; margin-bottom: 0; display: flex; flex-direction: column;">
+    <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--primary-subtle); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; flex-shrink: 0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h2>ATS hygiene</h2>
+    <p class="muted" style="margin-bottom: 0;">Contact info, headings, chronology, file length, and syntax — addressing the silent filters that triage applicants before human review.</p>
+  </article>
+
+  <article class="card" style="height: 100%; margin-bottom: 0; display: flex; flex-direction: column;">
+    <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--primary-subtle); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; flex-shrink: 0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="22" y1="12" x2="18" y2="12"></line>
+        <line x1="6" y1="12" x2="2" y2="12"></line>
+        <line x1="12" y1="6" x2="12" y2="2"></line>
+        <line x1="12" y1="22" x2="12" y2="18"></line>
+      </svg>
+    </div>
+    <h2>Skill &amp; keyword gaps</h2>
+    <p class="muted" style="margin-bottom: 0;">Extract requirements directly from target vacancy postings, benchmark coverage, and see exact placement guidance for missing phrases.</p>
+  </article>
+
+  <article class="card" style="height: 100%; margin-bottom: 0; display: flex; flex-direction: column;">
+    <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--primary-subtle); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; flex-shrink: 0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20h9"></path>
+        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+      </svg>
+    </div>
+    <h2>Rewrites that stay true</h2>
+    <p class="muted" style="margin-bottom: 0;">Transform passive tasks into verified achievements with stronger action verbs and metrics while retaining the authentic truth of your experience.</p>
+  </article>
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}New match{% endblock %}
+{% block content %}
+<section class="wideish" style="margin: 0 auto;">
+  <div class="page-head" style="border-bottom: none; margin-bottom: 1rem; padding-bottom: 0;">
+    <div>
+      <p class="eyebrow">Scoring Engine</p>
+      <h1>Match resume to a job</h1>
+      <p class="lede">Select a saved posting or paste a new one. The pipeline calculates ATS hygiene, keyword saturation, semantic alignment, and action proof.</p>
+    </div>
+  </div>
+
+  <form method="post" class="stack form-card">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    
+    <label>
+      <span>Select resume</span>
+      {{ form.resume }}
+      {{ form.resume.errors }}
+    </label>
+
+    <label>
+      <span>Select saved job <span class="muted" style="font-weight: 400;">(optional)</span></span>
+      {{ form.job }}
+      {{ form.job.errors }}
+    </label>
+
+    <div style="display: flex; align-items: center; gap: 1rem; margin: 0.5rem 0;">
+      <div style="flex: 1; height: 1px; background: var(--border);"></div>
+      <span class="muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Or paste a new posting</span>
+      <div style="flex: 1; height: 1px; background: var(--border);"></div>
+    </div>
+
+    <div class="split">
+      <label>
+        <span>Role title</span>
+        {{ form.job_title }}
+      </label>
+      <label>
+        <span>Company</span>
+        {{ form.job_company }}
+      </label>
+    </div>
+
+    <label>
+      <span>Job description</span>
+      {{ form.job_description }}
+    </label>
+
+    <label class="check">
+      <span>Save this job to my workspace</span>
+      {{ form.save_job }}
+    </label>
+
+    <div style="margin-top: 0.5rem;">
+      <button class="btn" type="submit" style="width: 100%;">Run analysis</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

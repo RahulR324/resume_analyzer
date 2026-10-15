@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ PRODUCT_NAME }}{% endblock %} · Resume intelligence</title>
+  <meta name="description" content="{{ PRODUCT_TAGLINE }}">
+  <link rel="icon" type="image/png" href="{% static 'logo/favicon.png' %}">
+  <link rel="shortcut icon" href="{% static 'logo/favicon.ico' %}">
+  <link rel="apple-touch-icon" href="{% static 'logo/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <a class="brand" href="{% if user.is_authenticated %}{% url 'accounts:dashboard' %}{% else %}{% url 'home' %}{% endif %}">
+      <img class="brand__logo" src="{% static 'logo/logo.png' %}" alt="{{ PRODUCT_NAME }}" height="32">
+    </a>
+    <button class="nav__toggle" id="navToggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+    <nav class="nav__links" id="navLinks">
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:dashboard' %}">Dashboard</a>
+        <a href="{% url 'resumes:list' %}">Resumes</a>
+        <a href="{% url 'jobs:list' %}">Jobs</a>
+        <a href="{% url 'analysis:list' %}">Matches</a>
+        <a class="btn btn--small" href="{% url 'analysis:create' %}">New match</a>
+        <form method="post" action="{% url 'accounts:logout' %}" class="nav__logout">
+          {% csrf_token %}
+          <button type="submit" class="linkish">Sign out</button>
+        </form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Sign in</a>
+        <a class="btn btn--small" href="{% url 'accounts:register' %}">Create account</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% if messages %}
+    <div class="flash-wrap">
+      {% for message in messages %}
+        <div class="flash flash--{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-foot">
+    <p>{{ PRODUCT_NAME }} scores resumes the way parsers and recruiters actually read them — keywords, structure, and proof of impact.</p>
+  </footer>
+  <script>
+    function togglePassword(btn, e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      var wrapper = btn.closest(".password-wrapper");
+      if (!wrapper) return;
+      var input = wrapper.querySelector("input");
+      if (!input) return;
+
+      var eyeShow = btn.querySelector(".eye-show");
+      var eyeHide = btn.querySelector(".eye-hide");
+
+      if (input.type === "password") {
+        input.type = "text";
+        if (eyeShow) eyeShow.style.display = "none";
+        if (eyeHide) eyeHide.style.display = "block";
+        btn.setAttribute("aria-label", "Hide password");
+      } else {
+        input.type = "password";
+        if (eyeShow) eyeShow.style.display = "block";
+        if (eyeHide) eyeHide.style.display = "none";
+        btn.setAttribute("aria-label", "Show password");
+      }
+    }
+    window.togglePassword = togglePassword;
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var navToggle = document.getElementById("navToggle");
+      var navLinks = document.getElementById("navLinks");
+      if (navToggle && navLinks) {
+        navToggle.addEventListener("click", function(e) {
+          e.stopPropagation();
+          var isOpen = navLinks.classList.toggle("is-open");
+          navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+        document.addEventListener("click", function(e) {
+          if (!navToggle.contains(e.target) && !navLinks.contains(e.target) && navLinks.classList.contains("is-open")) {
+            navLinks.classList.remove("is-open");
+            navToggle.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+    });
+  </script>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

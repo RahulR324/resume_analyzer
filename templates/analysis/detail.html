@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}{{ analysis.job_title }} match{% endblock %}
+{% block content %}
+{% with report=analysis.report insights=analysis.report.insights %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">{{ analysis.resume.title }}{% if analysis.job_company %} → {{ analysis.job_company }}{% endif %}</p>
+    <h1>{{ analysis.job_title }}</h1>
+    <p class="lede">{{ insights.summary_line }}</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn btn--ghost" href="{% url 'analysis:report' analysis.pk %}">Printable report</a>
+    <form method="post" action="{% url 'analysis:rerun' analysis.pk %}">{% csrf_token %}<button class="btn" type="submit">Re-run</button></form>
+  </div>
+</section>
+
+<section class="scoreboard">
+  <div class="ring" style="--score: {{ analysis.overall_score }}">
+    <strong>{{ analysis.overall_score }}</strong>
+    <span>Overall Fit</span>
+  </div>
+  <div class="meters">
+    <div><span>ATS hygiene</span><b>{{ analysis.ats_score }}/100</b><progress max="100" value="{{ analysis.ats_score }}"></progress></div>
+    <div><span>Keywords</span><b>{{ analysis.keyword_score }}/100</b><progress max="100" value="{{ analysis.keyword_score }}"></progress></div>
+    <div><span>Semantic fit</span><b>{{ analysis.semantic_score }}/100</b><progress max="100" value="{{ analysis.semantic_score }}"></progress></div>
+    <div><span>Structure</span><b>{{ analysis.structure_score }}/100</b><progress max="100" value="{{ analysis.structure_score }}"></progress></div>
+    <div><span>Impact</span><b>{{ analysis.impact_score }}/100</b><progress max="100" value="{{ analysis.impact_score }}"></progress></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Do this next</h2>
+  <ol class="actions">
+    {% for action in insights.next_actions %}
+      <li>{{ action }}</li>
+    {% endfor %}
+  </ol>
+</section>
+
+<div class="split">
+  <section class="card">
+    <h2>Working in your favor</h2>
+    <ul>
+      {% for item in insights.strengths %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+  </section>
+  <section class="card">
+    <h2>Gaps</h2>
+    {% for gap in insights.gaps %}
+      <article class="gap">
+        <h3>{{ gap.title }}</h3>
+        <p>{{ gap.detail }}</p>
+        <p class="muted">{{ gap.action }}</p>
+      </article>
+    {% empty %}
+      <p class="muted">No major gaps detected.</p>
+    {% endfor %}
+  </section>
+</div>
+
+<section class="card">
+  <h2>Keyword map</h2>
+  <div class="split">
+    <div>
+      <h3>Present</h3>
+      <div class="chips">
+        {% for kw in report.matched_keywords %}<span class="chip chip--ok">{{ kw }}</span>{% empty %}<p class="muted">None yet.</p>{% endfor %}
+      </div>
+    </div>
+    <div>
+      <h3>Missing</h3>
+      <div class="chips">
+        {% for kw in report.missing_keywords %}<span class="chip chip--miss">{{ kw }}</span>{% empty %}<p class="muted">Keyword coverage looks complete.</p>{% endfor %}
+      </div>
+    </div>
+  </div>
+  {% if insights.keyword_placements %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Keyword</th><th>Where to add</th><th>Example line</th></tr></thead>
+        <tbody>
+          {% for row in insights.keyword_placements %}
+            <tr><td><strong>{{ row.keyword }}</strong></td><td>{{ row.where }}</td><td><code>{{ row.example }}</code></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>ATS checks</h2>
+  <ul class="checks">
+    {% for check in report.ats_checks %}
+      <li class="checks__item checks__item--{{ check.status }}">
+        <span>{{ check.label }}</span>
+        <small>{{ check.hint }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Bullet rewrites</h2>
+  {% for item in insights.rewrites %}
+    <article class="rewrite">
+      <span class="eyebrow" style="color: var(--text-secondary); margin-bottom: 0.15rem;">Original</span>
+      <p class="muted">{{ item.original }}</p>
+      <span class="eyebrow" style="color: var(--primary); margin-top: 0.25rem; margin-bottom: 0.15rem;">Tailored revision</span>
+      <p><strong>{{ item.improved }}</strong></p>
+      <p class="muted" style="font-size: 0.8125rem; margin-bottom: 0.5rem;"><span style="font-weight: 600; color: var(--text-primary);">Why:</span> {{ item.why }}</p>
+      <div>
+        <button type="button" class="btn btn--small btn--ghost js-copy" data-copy="{{ item.improved }}">Copy rewrite</button>
+      </div>
+    </article>
+  {% empty %}
+    <p class="muted">No bullets to rewrite. Add achievement bullets to the experience section.</p>
+  {% endfor %}
+</section>
+
+<section class="card">
+  <div class="row" style="margin-bottom: 0.75rem;">
+    <h2>Cover letter draft</h2>
+    <button type="button" class="btn btn--small js-copy" data-copy-el="cover-letter">Copy letter</button>
+  </div>
+  <pre class="extract" id="cover-letter">{{ insights.cover_letter }}</pre>
+</section>
+
+<section class="card">
+  <h2>Interview pack</h2>
+  {% for q in insights.interview_prep %}
+    <article class="gap" style="border-left-color: var(--primary);">
+      <h3>{{ q.q }}</h3>
+      <p class="muted" style="color: var(--text-secondary);">{{ q.hint }}</p>
+    </article>
+  {% endfor %}
+</section>
+{% endwith %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Matches{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Match History</p>
+    <h1>Matches</h1>
+    <p class="lede">Review previous scoring analyses, skill alignment benchmarks, and interview packs.</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn" href="{% url 'analysis:create' %}">New match</a>
+  </div>
+</section>
+{% if analyses %}
+  <ul class="card-list">
+    {% for item in analyses %}
+      <li class="card row">
+        <div>
+          <a href="{{ item.get_absolute_url }}" style="font-size: 1rem; font-weight: 600;">{{ item.job_title }}</a>
+          <p class="muted" style="margin: 0.25rem 0 0 0; font-size: 0.8125rem;">
+            {{ item.resume.title }} · {{ item.created_at|date:"M j, Y" }} · <span class="pill">{{ item.label }}</span>
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <span class="score-mini" data-score="{{ item.overall_score }}">{{ item.overall_score }}<span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">/100</span></span>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">No resume matches yet</p>
+    <p class="muted" style="margin-bottom: 1.25rem; max-width: 28rem; margin-left: auto; margin-right: auto;">Upload a resume and match it against a target job to generate actionable scores and insights.</p>
+    <a class="btn" href="{% url 'analysis:create' %}">Start your first match</a>
+  </div>
+{% endif %}
+{% endblock %}

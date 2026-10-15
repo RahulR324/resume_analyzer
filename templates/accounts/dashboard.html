@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Workspace</p>
+    <h1>Hello{% if user.profile.display_name %}, {{ user.profile.display_name }}{% endif %}.</h1>
+    <p class="lede">Upload a resume, paste a posting, and get a match you can act on.</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn" href="{% url 'resumes:upload' %}">Upload resume</a>
+    <a class="btn btn--ghost" href="{% url 'analysis:create' %}">Run match</a>
+    <a class="text-link" href="{% url 'accounts:profile' %}">Edit profile</a>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat"><strong>{{ resume_count }}</strong><span>Resumes</span></div>
+  <div class="stat"><strong>{{ job_count }}</strong><span>Jobs</span></div>
+  <div class="stat"><strong>{{ analysis_count }}</strong><span>Matches</span></div>
+  <div class="stat"><strong>{{ avg_score }}</strong><span>Avg score</span></div>
+</section>
+
+{% if latest %}
+  <section class="card highlight">
+    <div class="row">
+      <div>
+        <p class="eyebrow">Latest match</p>
+        <h2>{{ latest.job_title }}{% if latest.job_company %} · {{ latest.job_company }}{% endif %}</h2>
+        <p class="muted">{{ latest.label }} — {{ latest.overall_score }}/100</p>
+      </div>
+      <div>
+        <a class="btn btn--small" href="{{ latest.get_absolute_url }}">Open report</a>
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+<div class="split">
+  <section class="card">
+    <header class="row" style="margin-bottom: 0.75rem;">
+      <h2>Resumes</h2>
+      <a class="text-link" href="{% url 'resumes:list' %}">View all</a>
+    </header>
+    {% if resumes %}
+      <ul class="plain-list">
+        {% for resume in resumes %}
+          <li><a href="{{ resume.get_absolute_url }}"><strong>{{ resume.title }}</strong></a> <span class="muted">{{ resume.word_count }} words</span></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No resumes yet. <a href="{% url 'resumes:upload' %}">Upload one</a> to start.</p>
+    {% endif %}
+  </section>
+  <section class="card">
+    <header class="row" style="margin-bottom: 0.75rem;">
+      <h2>Recent matches</h2>
+      <a class="text-link" href="{% url 'analysis:list' %}">View all</a>
+    </header>
+    {% if analyses %}
+      <ul class="plain-list">
+        {% for item in analyses %}
+          <li>
+            <a href="{{ item.get_absolute_url }}"><strong>{{ item.job_title }}</strong></a>
+            <span class="pill">{{ item.overall_score }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Run your first job match to see scores here.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

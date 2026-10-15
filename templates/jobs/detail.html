@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">{{ job.company|default:"Target Role" }}{% if job.location %} · {{ job.location }}{% endif %}</p>
+    <h1>{{ job.title }}</h1>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn" href="{% url 'analysis:create' %}?job={{ job.pk }}">Analyze against resume</a>
+    <a class="btn btn--ghost" href="{% url 'jobs:edit' job.pk %}">Edit</a>
+    <form method="post" action="{% url 'jobs:delete' job.pk %}" onsubmit="return confirm('Delete this job?');" style="display: inline;">
+      {% csrf_token %}
+      <button class="btn btn--ghost" type="submit" style="color: var(--error); border-color: var(--error-border);">Delete</button>
+    </form>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Detected requirements &amp; skills</h2>
+  <div class="chips">
+    {% for skill in job.parsed_data.skills %}
+      <span class="chip">{{ skill }}</span>
+    {% empty %}
+      <p class="muted">No recognized skills detected in this job posting.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="card">
+  <h2>Job description</h2>
+  <pre class="extract">{{ job.description }}</pre>
+</section>
+{% endblock %}

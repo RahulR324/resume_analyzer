@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit job{% else %}Save job{% endif %}{% endblock %}
+{% block content %}
+<section class="narrow">
+  <div class="page-head" style="border-bottom: none; margin-bottom: 1rem; padding-bottom: 0;">
+    <div>
+      <p class="eyebrow">Job Specification</p>
+      <h1>{% if object %}Edit job posting{% else %}Save a job posting{% endif %}</h1>
+      <p class="lede">Store role details and description text for fast reuse in resume comparisons.</p>
+    </div>
+  </div>
+  <form method="post" class="stack form-card">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <label>
+        <span>{{ field.label }}</span>
+        {{ field }}
+        {{ field.errors }}
+      </label>
+    {% endfor %}
+    <div style="margin-top: 0.5rem;">
+      <button class="btn" type="submit" style="width: 100%;">Save job posting</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

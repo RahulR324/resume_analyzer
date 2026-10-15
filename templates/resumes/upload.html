@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Upload resume{% endblock %}
+{% block content %}
+<section class="narrow">
+  <div class="page-head" style="border-bottom: none; margin-bottom: 1rem; padding-bottom: 0;">
+    <div>
+      <p class="eyebrow">Document Ingestion</p>
+      <h1>Upload resume</h1>
+      <p class="lede">PDF, DOCX, or TXT format (max 5 MB). Native text files parse with highest fidelity.</p>
+    </div>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="stack form-card">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <label>
+      <span>Resume title</span>
+      {{ form.title }}
+      {{ form.title.errors }}
+    </label>
+    <label>
+      <span>File selection</span>
+      {{ form.file }}
+      {{ form.file.errors }}
+    </label>
+    <label class="check">
+      <span>Make this my primary resume</span>
+      {{ form.make_primary }}
+    </label>
+    <div style="margin-top: 0.5rem;">
+      <button class="btn" type="submit" style="width: 100%;">Parse resume</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

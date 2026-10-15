@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Resumes{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Document Repository</p>
+    <h1>Resumes</h1>
+    <p class="lede">Manage versions, verify contact parsing, and track keyword representations across documents.</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn" href="{% url 'resumes:upload' %}">Upload resume</a>
+  </div>
+</section>
+{% if resumes %}
+  <ul class="card-list">
+    {% for resume in resumes %}
+      <li class="card row">
+        <div>
+          <a href="{{ resume.get_absolute_url }}" style="font-size: 1rem; font-weight: 600;">{{ resume.title }}</a>
+          <p class="muted" style="margin: 0.25rem 0 0 0; font-size: 0.8125rem;">
+            {{ resume.original_name }} · {{ resume.word_count }} words · {{ resume.created_at|date:"M j, Y" }}
+          </p>
+        </div>
+        <div>
+          {% if resume.is_primary %}<span class="pill">Primary</span>{% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">No resumes uploaded yet</p>
+    <p class="muted" style="margin-bottom: 1.25rem; max-width: 28rem; margin-left: auto; margin-right: auto;">Upload a PDF, DOCX, or TXT file (up to 5 MB) to start analyzing matches.</p>
+    <a class="btn" href="{% url 'resumes:upload' %}">Upload your first resume</a>
+  </div>
+{% endif %}
+{% endblock %}

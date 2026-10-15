@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ resume.title }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">{{ resume.file_type|upper }} · {{ resume.word_count }} words</p>
+    <h1>{{ resume.title }}</h1>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn" href="{% url 'analysis:create' %}?resume={{ resume.pk }}">Match to a job</a>
+    {% if not resume.is_primary %}
+      <form method="post" action="{% url 'resumes:primary' resume.pk %}" style="display: inline;">
+        {% csrf_token %}
+        <button class="btn btn--ghost" type="submit">Set as primary</button>
+      </form>
+    {% endif %}
+    <form method="post" action="{% url 'resumes:delete' resume.pk %}" onsubmit="return confirm('Delete this resume?');" style="display: inline;">
+      {% csrf_token %}
+      <button class="btn btn--ghost" type="submit" style="color: var(--error); border-color: var(--error-border);">Delete</button>
+    </form>
+  </div>
+</section>
+
+<div class="split">
+  <section class="card">
+    <h2>Extracted skills</h2>
+    <div class="chips">
+      {% for skill in resume.parsed_data.skills %}
+        <span class="chip">{{ skill }}</span>
+      {% empty %}
+        <p class="muted">No catalog skills detected. Ensure your resume has a clearly labeled Skills section.</p>
+      {% endfor %}
+    </div>
+  </section>
+  <section class="card">
+    <h2>Contact details</h2>
+    <ul class="plain-list">
+      {% for email in resume.parsed_data.contacts.emails %}
+        <li><span>Email</span><strong>{{ email }}</strong></li>
+      {% endfor %}
+      {% for phone in resume.parsed_data.contacts.phones %}
+        <li><span>Phone</span><strong>{{ phone }}</strong></li>
+      {% endfor %}
+      {% if not resume.parsed_data.contacts.emails and not resume.parsed_data.contacts.phones %}
+        <li class="muted">No contact information extracted from this file.</li>
+      {% endif %}
+    </ul>
+  </section>
+</div>
+
+<section class="card">
+  <h2>Parsed text extraction</h2>
+  <pre class="extract">{{ resume.extracted_text }}</pre>
+</section>
+{% endblock %}
